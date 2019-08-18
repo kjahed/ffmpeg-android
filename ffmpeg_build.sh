@@ -5,17 +5,24 @@
 pushd ffmpeg
 
 case $1 in
-  armeabi-v7a | armeabi-v7a-neon)
+  armeabi-v7a | armeabi-v7a-neon64)
     CPU='cortex-a8'
+  ;;
+  aarch64)
+    CPU='cortex-a53'
   ;;
   x86)
     CPU='i686'
+  ;;
+  x86-64)
+    CPU='x86-64'
   ;;
 esac
 
 make clean
 
 ./configure \
+--enable-cross-compile \
 --target-os="$TARGET_OS" \
 --cross-prefix="$CROSS_PREFIX" \
 --arch="$NDK_ABI" \
@@ -23,15 +30,12 @@ make clean
 --enable-runtime-cpudetect \
 --sysroot="$NDK_SYSROOT" \
 --enable-pic \
+--disable-network \
+--disable-everything \
+--enable-protocol=file \
 --enable-libx264 \
---enable-libass \
---enable-libfreetype \
---enable-libfribidi \
---enable-libmp3lame \
---enable-fontconfig \
---enable-pthreads \
 --disable-debug \
---disable-ffserver \
+--enable-pthreads \
 --enable-version3 \
 --enable-hardcoded-tables \
 --disable-ffplay \
@@ -45,7 +49,7 @@ make clean
 --prefix="${2}/build/${1}" \
 --extra-cflags="-I${TOOLCHAIN_PREFIX}/include $CFLAGS" \
 --extra-ldflags="-L${TOOLCHAIN_PREFIX}/lib $LDFLAGS" \
---extra-libs="-lpng -lexpat -lm" \
+--extra-libs="-lm" \
 --extra-cxxflags="$CXX_FLAGS" || exit 1
 
 make -j${NUMBER_OF_CORES} && make install || exit 1

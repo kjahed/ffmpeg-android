@@ -16,17 +16,29 @@ case $1 in
     NDK_CROSS_PREFIX="${NDK_TOOLCHAIN_ABI}"
     CFLAGS="${CFLAGS} -mfpu=neon"
   ;;
+  aarch64)
+    NDK_ABI='aarch64'
+    NDK_TOOLCHAIN_ABI='aarch64-linux-android'
+    NDK_CROSS_PREFIX="${NDK_TOOLCHAIN_ABI}"
+    CFLAGS="${CFLAGS} -mfpu=neon"
+  ;;
   x86)
     NDK_ABI='x86'
     NDK_TOOLCHAIN_ABI='x86'
     NDK_CROSS_PREFIX="i686-linux-android"
     CFLAGS="$CFLAGS -march=i686"
   ;;
+  x86-64)
+    NDK_ABI='x86_64'
+    NDK_TOOLCHAIN_ABI='x86_64'
+    NDK_CROSS_PREFIX="x86_64-linux-android"
+    CFLAGS="$CFLAGS -march=x86-64"
+  ;;
 esac
 
 TOOLCHAIN_PREFIX=${BASEDIR}/toolchain-android
 if [ ! -d "$TOOLCHAIN_PREFIX" ]; then
-  ${ANDROID_NDK_ROOT_PATH}/build/tools/make-standalone-toolchain.sh --toolchain=${NDK_TOOLCHAIN_ABI}-${NDK_TOOLCHAIN_ABI_VERSION} --platform=android-${ANDROID_API_VERSION} --install-dir=${TOOLCHAIN_PREFIX}
+  ${ANDROID_NDK_ROOT_PATH}/build/tools/make-standalone-toolchain.sh --toolchain=${NDK_TOOLCHAIN_ABI}-${NDK_TOOLCHAIN_ABI_VERSION} --platform=android-${ANDROID_API_VERSION} --install-dir=${TOOLCHAIN_PREFIX} --verbose
 fi
 CROSS_PREFIX=${TOOLCHAIN_PREFIX}/bin/${NDK_CROSS_PREFIX}-
 NDK_SYSROOT=${TOOLCHAIN_PREFIX}/sysroot
